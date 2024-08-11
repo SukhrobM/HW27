@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale-1">
+    <title>Новостной сайт | Главная</title>
+
+<!--    /bootstrap/-->
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+<!--    / gradient /-->
+    <style>
+        .overlay{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4));
+            pointer-events: none;
+            z-index: 1;
+            border-radius: 5px;
+        }
+        .content{
+            z-index: 2
+        }
+        .overlay-opposite{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2));
+            pointer-events: none;
+            z-index: 1;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body class="bg-secondary p-5"
+
+    >
+
+    <div class="container">
+
+<!--            / header /-->
+        <div class="d-block py-1 px-4 position-relative bg-secondary-subtle rounded-top-5 mt-3">
+            <header class="border-bottom lh-1 py-2">
+                <nav class="navbar row flex-nowrap justify-content-between align-items-center" aria-label="offcanvas Navbar">
+
+                    <div class="col-1">
+                        <button class="navbar-toggler btn-sm" type="button" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+                                aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                    </div>
+                    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbar1">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="offcanvasNavbar1">Навигация</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                                <li class="nav-item">
+                                    <a class="nav-link active" aria-current="page" href="/">Главная</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/categories">Категории</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="/articles">Статьи</a>
+                                </li>
+                                <hr>
+                                {% if user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a href="/logout" class="nav-link" aria-current="page">
+                                        <svg class="bi pe-none me-2" width="1" height="1"><use xlink:href="/logout"></use></svg>Выйти
+                                    </a>
+                                </li>
+                                {% else %}
+                                <li class="nav-item">
+                                    <a href="/accounts/login" class="nav-link" aria-current="page">
+                                        <svg class="bi pe-none me-2" width="1" height="1"><use xlink:href="/accounts/login"></use></svg>Войти
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/register" class="nav-link" aria-current="page">
+                                        <svg class="bi pe-none me-2" width="1" height="1"><use xlink:href="/register"></use></svg>Регистрация
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="col-2">
+                        <div class="d-flex gap-3 justify-content-left py-3">
+                            {% if user.is_authenticated %}
+                            <a class="nav-link link-body-emphasis" href="/logout">Выйти</a>
+                            {% else %}
+                            <a class="nav-link link-body-emphasis" href="/accounts/login">Войти</a>
+                            <a class="nav-link link-body-emphasis" href="/register">Регистрация</a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-5 text-center">
+                        <a class="block-header-logo text-body-emphasis text-decoration-none" href="/"><h3>Новости о главном</h3></a>
+                    </div>
+
+                    <div class="col-4 d-flex justify-content-end align-items-center">
+                        <form class="d-flex" method="post" action="search" role="search">
+                            {% csrf_token %}
+                            <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" name="search_article" id="searchArticle">
+                            <button class="btn btn-sm" role="button" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                     fill="none" stroke="currentColor" stroke-linecap="round"
+                                     stroke-linejoin="round" stroke-width="2" class="mx-2 my-1"
+                                     role="img" viewBox="0 0 24 24"><title>Search</title>
+                                    <circle cx="10.5" cy="10.5" r="7.5"></circle>
+                                    <path d="M21 21l-5.2-5.2"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                </nav>
+            </header>
+        </div>
+
+<!--            / middle /-->
+        <div class="d-block p-4 pt-3 position-relative bg-secondary-subtle rounded-bottom-5">
+            <main class="container">
+
+<!--                    / categories /-->
+                <div class="d-flex gap-2 justify-content-left py-3">
+                    {% for c in categories %}
+                    <button class="btn btn-outline-secondary rounded-pill px-3" type="button">
+                        <a href="/categories/{{ c.id }}" class="nav-link link-secondary">{{ c.category_name}}</a>
+                    </button>
+                    {% endfor %}
+                </div>
+
+<!--                    / main article /-->
+                <div class="mb-4 bg-body-secondary card position-relative">
+                    {% for p in articles %}
+                    {% if p.id == 1 %}
+                    <img src="{{ p.image.url }}" class="card-img-fluid rounded" alt="">
+                    <div class="overlay"></div>
+                    {% endif %}
+                    {% endfor %}
+<!--                    / article /-->
+                    <div class="content col-6 py-3 card-img-overlay text-light">
+                        {% for a in articles %}
+                        {% if a.id == 1 %}
+                        <h3 class="card-title display-5 fst-italic">{{ a.news_headline }}</h3>
+                        <div class="container mb-3" style="max-height: 130px; overflow: hidden;">
+                            <p class="card-text lead my-3">{{ a.content }}</p>
+                        </div>
+                        <div class="container">
+                            <p class="card-text lead mb-0">
+                                <a href="articles/1" class="link-light link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover fw-bold">Читать далее...</a>
+                            </p>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                </div>
+
+<!--                    / secondary articles /-->
+                <div class="row mb-2">
+
+<!--                    /left column/-->
+                    <div class="col-md-6">
+
+                        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4
+                        shadow-sm h-md-250 position-relative">
+                            <div class="card col d-flex flex-column position-static" style="height: 350px">
+                                {% for p in articles %}
+                                {% if p.id == 2 %}
+                                <img src="{{ p.image.url }}" class="card-img-fluid rounded" alt="">
+                                <div class="overlay-opposite"></div>
+                                {% endif %}
+                                {% endfor %}
+<!--                                /article/-->
+                                <div class="content col-6 py-3 card-img-overlay">
+                                    {% for c in categories %}
+                                    {% if c.id == 2 %}
+                                    <strong class="d-inline-block mb-2 text-primary-emphasis">{{ c.category_name }}</strong>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% for a in articles %}
+                                    {% if a.id == 2 %}
+                                    <h3 class="card-title mb-0">{{ a.news_headline}}</h3>
+                                    <div class="card-text mb-2 text-body-secondary">{{ a.date }}</div>
+                                    <div class="container mb-2" style="max-height: 125px; overflow: hidden;">
+                                        <p class="card-text mb-auto">{{ a.content }}</p>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                    <div class="card-text container">
+                                        <a href="articles/2" class="link-body-emphasis icon-link gap-1 link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover fw-bold">Читать далее...</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+<!--                    /right column/-->
+                    <div class="col-md-6">
+                        <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4
+                        shadow-sm h-md-250 position-relative">
+                            <div class="card col d-flex flex-column position-static" style="height: 350px">
+                                {% for p in articles %}
+                                {% if p.id == 3 %}
+                                <img src="{{ p.image.url }}" class="card-img-fluid rounded h-100" alt="">
+                                <div class="overlay"></div>
+                                {% endif %}
+                                {% endfor %}
+<!--                                /article/-->
+                                <div class="content col-6 py-3 card-img-overlay">
+                                    {% for c in categories %}
+                                    {% if c.id == 3 %}
+                                    <strong class="d-inline-block mb-2 text-primary-emphasis">{{ c.category_name }}</strong>
+                                    {% endif %}
+                                    {% endfor %}
+                                    {% for a in articles %}
+                                    {% if a.id == 3 %}
+                                    <h3 class="card-title text-light mb-0">{{ a.news_headline}}</h3>
+                                    <div class="card-text mb-2 text-secondary">{{ a.date }}</div>
+                                    <div class="container mb-2" style="max-height: 125px; overflow: hidden;">
+                                        <p class="text-light card-text mb-auto">{{ a.content }}</p>
+                                    </div>
+                                    {% endif %}
+                                    {% endfor %}
+                                    <div class="card-text container">
+                                        <a href="articles/3" class="link-light icon-link gap-1 link-offset-2 link-underline-opacity-0 link-underline-opacity-100-hover fw-bold">Читать далее...</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+
+<!--            / footer /-->
+        <div class="container">
+
+            <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+                <p class="col-md-4 mb-0 text-light">© 2024 Company, Inc</p>
+
+
+                <ul class="nav col-md-4 justify-content-end">
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-light">Домашняя страница</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-light">FAQs</a></li>
+                </ul>
+            </footer>
+
+        </div>
+
+    </div>
+
+</body>
+</html>

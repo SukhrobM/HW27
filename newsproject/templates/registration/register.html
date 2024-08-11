@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Новостной сайт | Регистрация</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+</head>
+<body class="align-items-canter p-5 bg-secondary text-center">
+<!--    <div class="container-md px-4 text-center">-->
+<!--        <div class="form-float bg-secondary-subtle px-5 py-3 rounded-5 w-50 position-absolute start-50 top-50 translate-middle">-->
+<!--            <h1 class="h3 mb-3 fw-normal">Регистрация</h1>-->
+<!--            <main class="form-signin">-->
+<!--                <form method="post">-->
+<!--                        {% csrf_token %}-->
+<!--                        <div class="form-floating">-->
+<!--                            <input type="text" class="form-control" id="floatingInput" placeholder="Pasha">-->
+<!--                            <label for="floatingInput">Имя пользователя</label>-->
+<!--                            <p>Не более 150 символов. Только буквы,цифры и символы "@", ".", "+", "-", "_"</p>-->
+<!--                        </div>-->
+<!--                        <div class="form-floating">-->
+<!--                            <input type="email" class="form-control" id="floatingEmail" placeholder="name@example.com">-->
+<!--                            <label for="floatingEmail">Введите адрес почты</label>-->
+<!--                        </div>-->
+<!--                        <div class="form-floating">-->
+<!--                            <input type="password" class="form-control" id="floatingPassword1" placeholder="password">-->
+<!--                            <label for="floatingPassword1">Введите пароль</label>-->
+<!--                            <p>Пароль не должен быть слишком похож на другую вашу личную информацию.</p>-->
+<!--                            <p>Ваш пароль должен содержать как минимум 8 символов.</p>-->
+<!--                            <p>Пароль не должен быть слишком простым и распространенным.</p>-->
+<!--                            <p>Пароль не должен состоять только из цифр.</p>-->
+<!--                        </div>-->
+<!--                        <div class="form-floating">-->
+<!--                            <input type="password" class="form-control" id="floatingPassword2" placeholder="password">-->
+<!--                            <label for="floatingPassword2">Повторите пароль</label>-->
+<!--                            <p>Для подтверждения, пожалуйста, введите пароль еще раз</p>-->
+<!--                        </div>-->
+<!--                        <button class="btn btn-dark w-50 py-2" type="submit">Регистрация</button>-->
+<!--                        <div class="d-block mt-2">-->
+<!--                            <button class="btn btn-outline-secondary w-50" type="button">-->
+<!--                                <a href="/" class="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-0-hover">-->
+<!--                                    На главную-->
+<!--                                </a>-->
+<!--                            </button>-->
+<!--                        </div>-->
+
+<!--                    {{ form.errors }}-->
+<!--                </form>-->
+<!--            </main>-->
+<!--        </div>-->
+<!--    </div>-->
+      <form method="post">
+        <h1 class="h3 mb-3 fw-normal">Регистрация</h1>
+          {% csrf_token %}
+          {{ form.as_p }}
+          <button class="button" type="submit" >Регистрация</button>
+      </form>
+</body>
+</html>

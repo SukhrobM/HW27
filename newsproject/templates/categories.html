@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+     {% load static %}
+    <meta charset="UTF-8">
+    <title>Новостной сайт | Категории</title>
+    <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+</head>
+<body class="bg-secondary p-5">
+    <div class="d-block py-3 px-5 text-black position-relative bg-secondary-subtle rounded-top-5">
+        <nav class="navbar nav-dark bg-secondary-subtle">
+            <div class="container-fluid">
+                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasMenu"
+                     aria-labelledby="offcanvasMenuLabel1">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasMenuLabel1">Навигация</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                            <li class="nav-item">
+                                <a class="nav-link active text-light" aria-current="page" href="/">Главная</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="/categories">Категории</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-light" href="/articles">Статьи</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <form class="d-flex" method="post" action="search" role="search">
+                    {% csrf_token %}
+                    <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" name="search_article">
+                    <button class="btn btn-outline-dark" type="submit">Поиск</button>
+                </form>
+            </div>
+        </nav>
+        <div class="d-block mt-3">
+            <h4 class="fw-light fst-italic">Главные новости</h4>
+            <h1 class="fw-bold text-uppercase">о главном</h1>
+        </div>
+        <div class="d-block position-absolute top-50 start-50 translate-middle">
+            <h1>{{ category.category_name }}</h1>
+        </div>
+    </div>
+    <div class="d-block p-4 pt-3 position-relative bg-secondary-subtle rounded-bottom-5">
+        <div class="d-flex gap-2 justify-content-left py-3">
+            {% for c in categories %}
+            <button class="btn btn-outline-secondary rounded-pill px-3" type="button">
+                <a href="/categories/{{ c.id }}" class="nav-link link-secondary">{{ c.category_name}}</a>
+            </button>
+            {% endfor %}
+        </div>
+        <div class="p-5 bg-body-tertiary rounded-top-3 rounded-bottom-5">
+            <div class="container-fluid py-5 mx-auto">
+                {% for a in articles %}
+                <div class="d-grid mb-4">
+                <button class="btn btn-dark btn-lg" type="button">
+                    <a href="/articles/{{ a.id }}"
+                    class="link-light link-underline link-underline-opacity-0 link-underline-opacity-0-hover">
+                    {{ a.news_headline }}</a>
+                </button>
+                </div>
+                {% endfor %}
+            </div>
+                <button class="btn btn-outline-secondary" type="button">
+                    <a href="/"
+                    class="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-0-hover">
+                    На главную
+                    </a>
+                </button>
+        </div>
+    </div>
+</body>
+</html>
