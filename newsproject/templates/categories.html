@@ -1,83 +1,171 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-     {% load static %}
+    {% load static %}
     <meta charset="UTF-8">
-    <title>Новостной сайт | Категории</title>
+    <meta name="viewport" content="width=device-width, initial-scale-1">
+    <title>Новостной сайт | {{ category.category_name }}</title>
+
+    <!--    /bootstrap/-->
     <link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
     <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    <!--    / gradient /-->
+    <style>
+        .overlay{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4));
+            pointer-events: none;
+            z-index: 1;
+            border-radius: 5px;
+        }
+        .content{
+            z-index: 2
+        }
+        .overlay-opposite{
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, rgba(255, 255, 255, 0.9), rgba(255, 255, 255, 0.2));
+            pointer-events: none;
+            z-index: 1;
+            border-radius: 5px;
+        }
+    </style>
 </head>
-<body class="bg-secondary p-5">
-    <div class="d-block py-3 px-5 text-black position-relative bg-secondary-subtle rounded-top-5">
-        <nav class="navbar nav-dark bg-secondary-subtle">
-            <div class="container-fluid">
-                <button class="navbar-toggler" type="button" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasMenu" aria-controls="offcanvasMenu">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="offcanvas offcanvas-end text-bg-dark" tabindex="-1" id="offcanvasMenu"
-                     aria-labelledby="offcanvasMenuLabel1">
-                    <div class="offcanvas-header">
-                        <h5 class="offcanvas-title" id="offcanvasMenuLabel1">Навигация</h5>
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas"
-                                aria-label="Close"></button>
+<body class="bg-secondary p-5" style="background: linear-gradient(to bottom, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.4))">
+
+    <!--/ header /-->
+    <div class="d-block py-1 px-4 position-relative bg-secondary-subtle rounded-top-5 mt-3">
+            <header class="border-bottom lh-1 py-2">
+                <nav class="navbar row flex-nowrap justify-content-between align-items-center" aria-label="offcanvas Navbar">
+
+                    <div class="col-1">
+                        <button class="navbar-toggler btn-sm" type="button" data-bs-toggle="offcanvas"
+                                data-bs-target="#offcanvasNavbar" aria-controls="offcanvasNavbar"
+                                aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
                     </div>
-                    <div class="offcanvas-body">
-                        <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
-                            <li class="nav-item">
-                                <a class="nav-link active text-light" aria-current="page" href="/">Главная</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" href="/categories">Категории</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-light" href="/articles">Статьи</a>
-                            </li>
-                        </ul>
+<!--                    /offcanvas/-->
+                    <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar" aria-labelledby="offcanvasNavbar1">
+                        <div class="offcanvas-header">
+                            <h5 class="offcanvas-title" id="offcanvasNavbar1">Навигация</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+                        </div>
+                        <div class="offcanvas-body">
+                            <ul class="navbar-nav justify-content-end flex-grow-1 pe-3">
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="/">Главная</a>
+                                </li>
+                                {% for c in categories %}
+                                <li class="nav-item">
+                                    <a href="/categories/{{ c.id }}" class="nav-link" aria-current="page" >{{c.category_name}}</a>
+                                </li>
+                                {% endfor %}
+                                <hr>
+                                {% if user.is_authenticated %}
+                                <li class="nav-item">
+                                    <a href="/logout" class="nav-link" aria-current="page">
+                                        <svg class="bi pe-none me-2" width="1" height="1"><use xlink:href="/logout"></use></svg>Выйти
+                                    </a>
+                                </li>
+                                {% else %}
+                                <li class="nav-item">
+                                    <a href="/accounts/login" class="nav-link" aria-current="page">
+                                        <svg class="bi pe-none me-2" width="1" height="1"><use xlink:href="/accounts/login"></use></svg>Войти
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a href="/register" class="nav-link" aria-current="page">
+                                        <svg class="bi pe-none me-2" width="1" height="1"><use xlink:href="/register"></use></svg>Регистрация
+                                    </a>
+                                </li>
+                                {% endif %}
+                            </ul>
+                        </div>
                     </div>
-                </div>
-                <form class="d-flex" method="post" action="search" role="search">
-                    {% csrf_token %}
-                    <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" name="search_article">
-                    <button class="btn btn-outline-dark" type="submit">Поиск</button>
-                </form>
-            </div>
-        </nav>
-        <div class="d-block mt-3">
-            <h4 class="fw-light fst-italic">Главные новости</h4>
-            <h1 class="fw-bold text-uppercase">о главном</h1>
+
+                    <div class="col-2">
+                        <div class="d-flex gap-3 justify-content-left py-3">
+                            {% if user.is_authenticated %}
+                            <a class="nav-link link-body-emphasis" href="/logout">Выйти</a>
+                            {% else %}
+                            <a class="nav-link link-body-emphasis" href="/accounts/login">Войти</a>
+                            <a class="nav-link link-body-emphasis" href="/register">Регистрация</a>
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <div class="col-5 text-center">
+                        <a class="block-header-logo text-body-emphasis text-decoration-none" href="/"><h3>Новости о главном</h3></a>
+                    </div>
+
+                    <div class="col-4 d-flex justify-content-end align-items-center">
+                        <form class="d-flex" method="post" action="search" role="search">
+                            {% csrf_token %}
+                            <input class="form-control me-2" type="search" placeholder="Поиск" aria-label="Search" name="search_article" id="searchArticle">
+                            <button class="btn btn-sm" role="button" type="submit">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                     fill="none" stroke="currentColor" stroke-linecap="round"
+                                     stroke-linejoin="round" stroke-width="2" class="mx-2 my-1"
+                                     role="img" viewBox="0 0 24 24"><title>Search</title>
+                                    <circle cx="10.5" cy="10.5" r="7.5"></circle>
+                                    <path d="M21 21l-5.2-5.2"></path>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+
+                </nav>
+            </header>
         </div>
-        <div class="d-block position-absolute top-50 start-50 translate-middle">
-            <h1>{{ category.category_name }}</h1>
-        </div>
-    </div>
+
+
+    <!--content-->
     <div class="d-block p-4 pt-3 position-relative bg-secondary-subtle rounded-bottom-5">
         <div class="d-flex gap-2 justify-content-left py-3">
             {% for c in categories %}
-            <button class="btn btn-outline-secondary rounded-pill px-3" type="button">
-                <a href="/categories/{{ c.id }}" class="nav-link link-secondary">{{ c.category_name}}</a>
-            </button>
+            <a href="/categories/{{ c.id }}" class="btn btn-outline-secondary rounded-pill px-3">{{ c.category_name }}</a>
             {% endfor %}
         </div>
         <div class="p-5 bg-body-tertiary rounded-top-3 rounded-bottom-5">
+            <h1 class="text-center">{{ category.category_name }}</h1>
             <div class="container-fluid py-5 mx-auto">
                 {% for a in articles %}
                 <div class="d-grid mb-4">
-                <button class="btn btn-dark btn-lg" type="button">
-                    <a href="/articles/{{ a.id }}"
-                    class="link-light link-underline link-underline-opacity-0 link-underline-opacity-0-hover">
-                    {{ a.news_headline }}</a>
-                </button>
+                    <a href="/articles/{{ a.id }}" class="btn btn-dark btn-lg px-3">
+                    {{ a.news_headline }}
+                    </a>
                 </div>
                 {% endfor %}
             </div>
-                <button class="btn btn-outline-secondary" type="button">
-                    <a href="/"
-                    class="link-secondary link-underline link-underline-opacity-0 link-underline-opacity-0-hover">
+                    <a href="/" class="btn btn-outline-secondary px-3">
                     На главную
                     </a>
-                </button>
         </div>
     </div>
+
+    <!--/ footer /-->
+    <div class="container">
+
+            <footer class="d-flex flex-wrap justify-content-between align-items-center py-3 my-4 border-top">
+                <p class="col-md-4 mb-0 text-light">© 2024 Company, Inc</p>
+
+
+                <ul class="nav col-md-4 justify-content-end">
+                    <li class="nav-item"><a href="/" class="nav-link px-2 text-light">Домашняя страница</a></li>
+                    <li class="nav-item"><a href="#" class="nav-link px-2 text-light">FAQs</a></li>
+                </ul>
+            </footer>
+
+        </div>
+
 </body>
 </html>

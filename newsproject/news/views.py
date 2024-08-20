@@ -19,8 +19,10 @@ def home_page(request):
 
 def get_articles(request, pk):
     article = News.objects.get(id=pk)
+    categories = NewsCategory.objects.all()
     context = {
-        'article': article
+        'article': article,
+        'categories': categories
     }
     return render(request, 'articles.html', context)
 
@@ -28,9 +30,11 @@ def get_articles(request, pk):
 def get_category(request, pk):
     exact_category = NewsCategory.objects.get(id=pk)
     article = News.objects.filter(news_category=exact_category)
+    categories = NewsCategory.objects.all()
     context = {
         'articles': article,
-        'category': exact_category
+        'category': exact_category,
+        'categories': categories
     }
     return render(request, 'categories.html', context)
 
